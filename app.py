@@ -16,6 +16,7 @@ config.read("config/config.cfg")
 receiver_email = configSectionParser(config,"RECEIVER")['email']
 receiver_password = configSectionParser(config,"RECEIVER")['password']
 sender_email = configSectionParser(config,"SENDER")['email']
+emailer_url = configSectionParser(config,"EMAILER")['url']
 
 # INIT
 g = gmail.login(receiver_email, receiver_password)
@@ -82,6 +83,23 @@ def file_reader(file_name):
             ctr += 1
 
         final_array.append(_dict.copy())
+    
+    # LOOP DATA
+    for remittance in final_array:
+        payload = { 
+            "serviceType": "Remittance", 
+            "fspName": "Sendah", 
+            "email": remittance['email'], 
+            "subject": "Remittance", 
+            "name": remittance['sender name'], 
+            "type": "success-remittance", 
+            "amount":remittance['amount'], 
+        }
+        # CALL SEND EMAIL
+        r = requests.post(emailer_url, json=payload)
+        print(r.text)
+
+
     try:
         os.remove(file_name)
     except OSError:
