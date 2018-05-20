@@ -23,7 +23,7 @@ g = gmail.login(receiver_email, receiver_password)
 # filter email based on sender
 emails = g.inbox().mail(sender=sender_email, prefetch=True, unread=True)
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 
 # INDEX 
 @app.route('/')
@@ -36,7 +36,7 @@ def email_checker():
     for email in emails:
         data =  email.body
         for attachment in email.attachments:
-            attachment.save( attachment.name)
+            attachment.save(attachment.name)
             return file_reader(attachment.name)
 
 def file_reader(file_name):
@@ -107,4 +107,5 @@ def file_reader(file_name):
     return jsonify(result=final_array) 
 
 if __name__ == '__main__':
-    app.run()
+    #app.run()
+    app.run(host='0.0.0.0', port=5000)
